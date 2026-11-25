@@ -81,7 +81,8 @@ def run_experiment(
         batch_size=batch_size,
     )
     # 训练结束即保存模型；结果目录还会记录该权重路径。
-    weights_path = Path(weights_dir) / f"{run_id}.joblib"
+    suffix = getattr(model, "weights_suffix", ".joblib")
+    weights_path = Path(weights_dir) / f"{run_id}{suffix}"
     weights_path.parent.mkdir(parents=True, exist_ok=True)
     model.save(str(weights_path))
     # 预测结果与真实标签都按 eval_ids 顺序排列，用于后续逐样本分析。
@@ -110,6 +111,7 @@ def run_experiment(
         "model": model.name,
         "variant": variant,
         "seed": seed,
+        "batch_size": batch_size,
         "dataset_id": dataset.dataset_id,
         "dataset_version": dataset.dataset_version,
         "eval_split": eval_split,

@@ -1,8 +1,7 @@
 # Model implementations
 
-The `svm.py` and `decision_tree.py` adapters are implemented. Add subsequent
-model files here, for example `cnn.py`. Do not put dataset paths or split logic
-in model files.
+The `svm.py`, `decision_tree.py`, and `cnn.py` adapters are implemented.
+Do not put dataset paths or split logic in model files.
 
 Each adapter should satisfy `ModelAdapter` in `train/contracts.py`:
 

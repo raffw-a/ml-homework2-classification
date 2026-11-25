@@ -6,6 +6,10 @@ from model.svm import LinearSVMAdapter
 
 def build_model(name: str):
     """按配置名称创建全新的未训练模型，避免不同实验意外共享状态。"""
+    if name == "cnn":
+        from model.cnn import CNNAdapter
+
+        return CNNAdapter()
     factories = {
         "svm": LinearSVMAdapter,
         "decision_tree": DecisionTreeAdapter,
@@ -14,7 +18,7 @@ def build_model(name: str):
         return factories[name]()
     except KeyError as exc:
         raise ValueError(
-            f"unknown model {name!r}; choose from {sorted(factories)}"
+            f"unknown model {name!r}; choose from {sorted([*factories, 'cnn'])}"
         ) from exc
 
 

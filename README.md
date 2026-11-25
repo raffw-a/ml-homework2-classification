@@ -28,7 +28,7 @@
 └── 实验接口框架.md
 ```
 
-`train/runner.py` 是可注入数据集提供器和模型适配器的共用框架。A 实现满足 `DatasetProvider` 的数据提供器；B 的 SVM 和决策树适配器已放在 `model/`，后续 CNN 等模型也放在此目录；随后由项目入口加载配置并调用 `run_experiment(...)`。当前仍需 A 实现具体 ImageNet 数据提供器，并生成固定划分清单。
+`train/runner.py` 接受数据提供器和模型适配器。SVM、决策树和 CNN 均位于 `model/`。当前仍需 A 实现具体 ImageNet 数据提供器，并生成固定划分清单。
 
 ## 环境与模型
 
@@ -40,7 +40,20 @@ python -m pip install -r requirements.txt
 
 基础模型为 LinearSVC 支持向量机和决策树。SVM 默认使用训练集内拟合的标准化步骤；调参时通过配置中的 `params` 传给 scikit-learn，例如 SVM 的 `C`、决策树的 `max_depth`。ImageNet 规模下请先固定可运行的共同子集和特征尺寸；传统模型会把该子集的特征矩阵放入内存，并非流式拟合。
 
-训练完成后，`train/runner.py` 将模型权重写入 `weights/<run_id>.joblib`，并在 `runs/<run_id>/config.json` 记录路径和配置。权重目录已创建，但生成的权重默认被 Git 忽略。
+CNN 为从零训练的双层卷积网络，不下载预训练权重。A 提供 `dataset` 和 `splits` 后，在项目入口中调用：
+
+```python
+from model import build_model
+from train.runner import run_experiment
+
+result = run_experiment(
+    dataset=dataset, split_manifest=splits, model=build_model("cnn"),
+    params={"epochs": 5, "lr": 0.001}, batch_size=32, seed=42,
+    run_id="cnn-baseline-seed42", eval_split="val",
+)
+```
+
+CNN 通过 `iter_batches` 逐批读取 `[B, 3, H, W]` 的 RGB 图像，不展平、不缓存整个划分。传统模型保存为 `weights/<run_id>.joblib`，CNN 保存为 `weights/<run_id>.pt`。三者都在 `runs/<run_id>/` 输出相同格式的配置、指标和预测表。
 
 `train/config.example.json` 中的字段说明和模型超参数说明见 [train/CONFIG.md](train/CONFIG.md)。
 

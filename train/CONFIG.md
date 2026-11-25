@@ -16,7 +16,7 @@
 ## experiment
 
 - `run_id`：本次运行的唯一名称；同名结果目录已存在时 runner 会报错，避免覆盖结果。
-- `model`：模型工厂名称；当前可用 `svm`、`decision_tree`。
+- `model`：模型工厂名称；当前可用 `svm`、`decision_tree`、`cnn`。
 - `variant`：实验版本标签，例如 `baseline`、`tuned`。
 - `seed`：随机种子；用于模型内部可控的随机过程。
 - `eval_split`：调参阶段设为 `val`；最终参数冻结后才设为 `test`。
@@ -26,10 +26,12 @@
 - `preprocessing.normalization`：记录归一化或标准化方法。若统计量由数据估计，只能用训练集拟合。
 - `preprocessing.flatten_for_classical_models`：传统模型是否将图像展平成 `[N, D]` 特征；SVM 和决策树适配器当前需要矩阵输入。
 
+CNN 实验将 `model` 设为 `cnn`，使用新的 `run_id`。`params` 支持 `epochs`（训练轮数，默认 5）、`lr`（Adam 学习率，默认 0.001）、`weight_decay`（权重衰减，默认 0）和 `device`（默认 `auto`，也可指定 `cpu` 或 `cuda`）。数据提供器需保留 RGB 通道维度；`uint8` 输入由模型除以 255，浮点输入直接使用，由 A 负责统一缩放或标准化。网络输出类别数取自 `dataset.class_names`，标签应为从 0 起的连续编号。
+
 ## 输出路径
 
 - `output_dir`：指标、配置和逐样本预测结果的根目录，默认 `runs/`。
-- `weights_dir`：拟合模型文件的根目录，默认 `weights/`。每次运行生成 `<run_id>.joblib`；大模型权重不会自动提交到 Git。
+- `weights_dir`：权重目录，默认 `weights/`。CNN 保存为 `<run_id>.pt`，传统模型保存为 `<run_id>.joblib`。
 
 runner 结果目录包含：
 
