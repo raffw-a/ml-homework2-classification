@@ -1,0 +1,28 @@
+{
+  "dataset": {
+    "provider": "replace_with_project_dataset_provider",
+    "dataset_id": "imagenet-1k",
+    "dataset_version": "record_exact_version_or_revision",
+    "access_mode": "streaming_or_shared_storage",
+    "split_manifest": "manifests/imagenet_split.json",
+    "class_map": "manifests/class_map.json",
+    "local_data_root": null,
+    "num_classes": 1000
+  },
+  "experiment": {
+    "run_id": "svm-baseline-seed42",
+    "model": "svm",
+    "variant": "baseline",
+    "seed": 42,
+    "eval_split": "val",
+    "batch_size": 64,
+    "params": {},
+    "preprocessing": {
+      "image_size": null,
+      "normalization": "fit_or_define_from_train_only",
+      "flatten_for_classical_models": true
+    }
+  },
+  "output_dir": "runs",
+  "weights_dir": "weights"
+}

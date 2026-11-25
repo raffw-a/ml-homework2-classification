@@ -1,0 +1,34 @@
+# ImageNet and other source data
+data/
+datasets/
+imagenet/
+ILSVRC*/
+*.tar
+*.tar.gz
+*.zip
+*.parquet
+
+# Local caches and machine-specific configuration
+.cache/
+cache/
+.env
+.env.*
+!.env.example
+*.local.json
+
+# Experiment outputs and checkpoints
+runs/
+outputs/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+weights/*
+!weights/README.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
